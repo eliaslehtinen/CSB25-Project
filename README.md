@@ -13,8 +13,8 @@ Flaws (OWASP 2021)
 
 ## 2. A02 - Cryptographic Failures
 
-- Flaw: Passwords are stored in the database hashed using sha-256 but without salting. If attackers gain access to these hashes, they can crack the passwords by referencing a list of precalculated sha-256 hashes.
-- Fix: Use a salted hash. It's also important to use a secure hashing algorithm instead of old deprecated ones like MD5.
+- Flaw: Passwords are stored in the database hashed using outdated unsalted MD5 hash. If attackers gain access to these hashes, they can crack the passwords by referencing a list of precalculated MD5 hashes.
+- Fix: Use a salted hash. It's also important to use a modern secure algorithm like PBKDF2 with SHA256, which is the default Django 5.2 uses.
 
 ## 3. A03 - Injection
 
