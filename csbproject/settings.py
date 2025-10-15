@@ -40,7 +40,13 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 ]
 
+# Fix to flaw 4:
+# Brute force attack protection
+BRUTE_FORCE_TRESHOLD = 5 # Allow 5 login attempts before timeout
+BRUTE_FORCE_TIMEOUT = 300 # Timeout of 300 seconds
+
 MIDDLEWARE = [
+    'notes.middleware.BruteForceProtectionMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -100,6 +106,11 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 PASSWORD_HASHERS = [
+    "notes.customhasher.UnsaltedMD5PasswordHasher",
+    # Fix for flaw 2:
+    # Remove this deprecated UnsaltedMD5PasswordHasher.
+    # Django uses the first hasher in this list to hash passwords.
+    # PBKDF2PasswordHasher is the default and is very secure.
     "django.contrib.auth.hashers.PBKDF2PasswordHasher",
     "django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher",
     "django.contrib.auth.hashers.Argon2PasswordHasher",

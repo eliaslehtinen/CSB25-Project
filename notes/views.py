@@ -19,9 +19,22 @@ class CreateNoteForm(forms.Form):
 
 @login_required
 def mainPageView(request):
+    # Logged in user
     user = request.user
-    notes = Note.objects.filter(owner=user).values()
-    context = {"user": user, "notes": notes}
+    # Text user uses to search for notes
+    search = request.GET.get("search_text")
+    if search == None:
+        search = ""
+
+    user_id = user.id
+    query = "SELECT * FROM notes_note where owner_id={} AND note_name LIKE '%{}%'"
+    notes = Note.objects.raw(query.format(user_id, search))
+
+    # Fix for flaw 3:
+    # Use safe built in methods like filter to create sql queries:
+    #notes = Note.objects.filter(owner=user, note_name__icontains=search)
+
+    context = {"user": user, "notes": notes, "search": search}
     return render(request, "notes/home.html", context)
 
 def welcomeView(request):
@@ -75,10 +88,10 @@ def createAccount(request):
         form = CreateUserForm(request.POST)
         if form.is_valid():
             form_data = form.cleaned_data
-            # Create new user:
-            user = User.objects.create_user(form.cleaned_data["username"])
-            user.password = make_password(form_data["password"], None, "md5")
+            # Create new user: (email is None)
+            user = User.objects.create_user(form.cleaned_data["username"], None, form_data["password"])
             user.save()
+            # Authenticate and log the user in
             created_user = authenticate(username=form_data["username"], password=form_data["password"],)
             login(request, created_user)
 

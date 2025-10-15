@@ -24,6 +24,7 @@ Flaws (OWASP 2021)
 ## 4. A07 - Identification and Authentication Failures
 
 - Flaw: No protection against brute force attacks. Attackers can gain access to an account by trying lots of common passwords.
+- The passwordcandidates.txt and bruteforcepassword.py are copied from my answer to the Securing Software part4-19 Password with "admin123321" added to the password list from the exercise.
 - Fix: Prevent brute force attacks by limiting how many login attempts can be made in a short time.
 
 ## 5. A09 - Security Logging and Monitoring Failures

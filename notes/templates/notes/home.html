@@ -18,6 +18,11 @@
         </p>
 
         <h2>Your notes</h2>
+        <form action="/notes/" method="GET">
+            {% csrf_token %}
+            <input type="text" name="search_text" value="{{search}}" size="100"/>
+            <input type="submit" value="Search"/>
+        </form>
 
         <ul>
             {% for n in notes %}
