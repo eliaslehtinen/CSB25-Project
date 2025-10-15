@@ -11,6 +11,8 @@
         
         <p>{{note.note_content}}</p>
 
+        <p><b>Created {{note.created_date}}</b></p>
+
         <form action="../delete/" method="POST">
             {% csrf_token %}
             <button type="submit">Delete note</button>
