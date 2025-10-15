@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <title>Simple Notes App</title>
+    </head>
+
+
+    <body>
+        <h1>Simple Notes App</h1>
+        
+        <p>Welcome {{user.username}}!</p>
+
+        <p>
+        <form action="/logout/" method="POST">
+            {% csrf_token %}
+            <input type="submit" value="Log Out"/>
+        </form>
+        </p>
+
+        <h2>Your notes</h2>
+
+        <ul>
+            {% for n in notes %}
+            <li>
+                {{n.note_name}}
+            </li>
+            {% endfor %}
+        </ul>
+
+
+        <h2>Create note</h2>
+
+        <form action="create/" method="POST">
+            {% csrf_token %}
+            <label>Note name</label>
+            <input type="text" name="Name" maxlength="30" size="40"/><br/><br/>
+            <label>Content</label>
+            <textarea name="Content" maxlength="500" wrap="soft" cols="100"></textarea><br/><br/>
+            <input type="submit" value="Create"/>
+        </form>
+    </body>
+
+
+    </body>
+</html>
