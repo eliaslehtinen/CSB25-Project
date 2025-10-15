@@ -9,22 +9,18 @@ class BruteForceProtectionMiddleware:
 
     def __call__(self, request):
         response = self.get_response(request)
-        print(response)
 
         # If login attempt
-        if "login" in request.path and request.method == "POST":
+        if (request.path == "/admin/login/" or request.path == "/login/") and request.method == "POST":
             # Source ip of login attempt
             ip_address = request.META.get("REMOTE_ADDR")
-            print(ip_address)
 
             # Amount of failed login attempts is stored in cache
-            cache_key = f"failed_login_attempts:{ip_address}"
+            cache_key = f"login_attempts:{ip_address}"
             login_attempts = cache.get(cache_key, 0)
             # If failed login attempt, increment number in cache
-            if response.status_code != 200:
+            if not request.user.is_authenticated:
                 cache.set(cache_key, login_attempts + 1, timeout=settings.BRUTE_FORCE_TIMEOUT)
-            else:
-                cache.set(cache_key, 0)
             
             # If more failed login attempts than allowed, block attempts until timeout ends
             if login_attempts >= settings.BRUTE_FORCE_TRESHOLD:
