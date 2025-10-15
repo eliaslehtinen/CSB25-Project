@@ -1,6 +1,9 @@
 from django.core.cache import cache
 from django.conf import settings
 from django.http import HttpResponseForbidden
+import logging
+
+log = logging.getLogger(__name__)
 
 # Based on https://unfoldai.com/preventing-brute-force-with-django-middleware/
 class BruteForceProtectionMiddleware:
@@ -24,6 +27,8 @@ class BruteForceProtectionMiddleware:
             
             # If more failed login attempts than allowed, block attempts until timeout ends
             if login_attempts >= settings.BRUTE_FORCE_TRESHOLD:
+                # Fix for flaw 5:
+                #log.warning("Multiple failed login attempts from ip: {ip}. Brute force protection timeout activated.".format(ip=ip_address))
                 return HttpResponseForbidden(
                     f"Too many login attempts. Please wait {settings.BRUTE_FORCE_TIMEOUT // 60} minutes and try again."
                 )

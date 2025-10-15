@@ -42,11 +42,11 @@ INSTALLED_APPS = [
 
 # Fix to flaw 4:
 # Brute force attack protection
-#BRUTE_FORCE_TRESHOLD = 5 # Allow 5 login attempts before timeout
-#BRUTE_FORCE_TIMEOUT = 300 # Timeout of 300 seconds
+BRUTE_FORCE_TRESHOLD = 5 # Allow 5 login attempts before timeout
+BRUTE_FORCE_TIMEOUT = 300 # Timeout of 300 seconds
 
 MIDDLEWARE = [
-    #'notes.middleware.BruteForceProtectionMiddleware',
+    'notes.middleware.BruteForceProtectionMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -74,6 +74,51 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'csbproject.wsgi.application'
+
+
+# Fix for flaw 5:
+# Logging
+"""
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "standard": {
+            "format": "{asctime} {levelname} {message}",
+            "style": "{",
+        }
+    },
+    "handlers": {
+        "general": {
+            "class": "logging.FileHandler",
+            "filename": "logs/general.log",
+            "level": "DEBUG",
+            "formatter": "standard",
+        },
+        "console": {
+            "class": "logging.StreamHandler",
+            "level": "INFO",
+            "formatter": "standard",
+        },
+        "security": {
+            "class": "logging.FileHandler",
+            "filename": "logs/security.log",
+            "level": "DEBUG",
+            "formatter": "standard",
+        }
+    },
+    "loggers": {
+        "notes": {
+            "level": "DEBUG",
+            "handlers": ["general", "console"]
+        },
+        "notes.middleware": {
+            "level": "WARNING",
+            "handlers": ["security"]
+        }
+    },
+}
+"""
 
 
 # Database

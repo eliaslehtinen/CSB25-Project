@@ -1,13 +1,17 @@
 from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
+from django.contrib.auth.signals import user_logged_in, user_logged_out, user_login_failed
 from django.contrib.auth import authenticate, login
-import django.contrib.messages
+from django.dispatch import receiver
 from django import forms
 from .models import Note
 import datetime
+import logging
+
+log = logging.getLogger(__name__)
 
 class CreateUserForm(forms.Form):
     username = forms.CharField(max_length=20, required=True, label="Username")
@@ -97,3 +101,21 @@ def createAccount(request):
 
             return HttpResponseRedirect("/notes/")
     return render(request, "notes/createUser.html", {"form": form})
+
+# Fix for flaw 5:
+"""
+@receiver(user_logged_in)
+def user_logged_in_callback(sender, request, user, **kwargs):
+    ip_address = request.META.get("REMOTE_ADDR")
+    log.info("Login user: {user} from ip: {ip}".format(user=user, ip=ip_address))
+
+@receiver(user_logged_out)
+def user_logged_out_callback(sender, request, user, **kwargs):
+    ip_address = request.META.get("REMOTE_ADDR")
+    log.info("Logout user: {user} from ip: {ip}".format(user=user, ip=ip_address))
+
+@receiver(user_login_failed)
+def user_login_failed_callback(sender, credentials, request, **kwargs):
+    ip_address = request.META.get("REMOTE_ADDR")
+    log.warning("Failed login: {credentials} from ip: {ip}".format(credentials=credentials, ip=ip_address))
+"""
