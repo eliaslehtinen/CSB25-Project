@@ -30,6 +30,13 @@ def welcomeView(request):
 @login_required
 def noteView(request, note_id):
     note = Note.objects.get(id=note_id)
+
+    # Fix for flaw 1:
+    # Check if the logged in user is the owner of the note
+    #
+    #if (note.owner != request.user):
+    #    return HttpResponseRedirect("/notes/")
+
     return render(request, "notes/noteView.html", {"note": note})
 
 @login_required
@@ -51,6 +58,13 @@ def createNote(request):
 def deleteNote(request, note_id):
     if request.method == "POST":
         note = Note.objects.get(id=note_id)
+
+        # Fix for flaw 1:
+        # Check if the logged in user is the owner of the note
+        #
+        #if note.owner != request.user:
+        #    return HttpResponseRedirect("/notes/")
+
         note.delete()
     return HttpResponseRedirect("/notes/")
 
