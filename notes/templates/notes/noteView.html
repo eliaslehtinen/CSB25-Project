@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <title>{{note.note_name}}</title>
+    </head>
+
+    <body>
+        <a href="/notes/">&#8592; Back to notes</a>
+
+        <h1>{{note.note_name}}</h1>
+        
+        <p>{{note.note_content}}</p>
+
+        <form action="../delete/" method="POST">
+            {% csrf_token %}
+            <button type="submit">Delete note</button>
+        </form>
+    </body>
+</html>

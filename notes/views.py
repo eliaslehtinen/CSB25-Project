@@ -7,10 +7,15 @@ from django.contrib.auth import authenticate, login
 import django.contrib.messages
 from django import forms
 from .models import Note
+import datetime
 
 class CreateUserForm(forms.Form):
     username = forms.CharField(max_length=20, required=True, label="Username")
     password = forms.CharField(widget=forms.PasswordInput, label="Password")
+
+class CreateNoteForm(forms.Form):
+    note_name = forms.CharField(max_length=30, required=True, label="Note name")
+    note_content = forms.CharField(max_length=500, required=True, label="Content")
 
 @login_required
 def mainPageView(request):
@@ -24,15 +29,30 @@ def welcomeView(request):
 
 @login_required
 def noteView(request, note_id):
-    return HttpResponse("Not implemented")
+    note = Note.objects.get(id=note_id)
+    return render(request, "notes/noteView.html", {"note": note})
 
 @login_required
 def createNote(request):
-    return HttpResponse("Not implemented")
+    if request.method == "POST":
+        # Create note
+        name = request.POST.get("note_name")
+        content = request.POST.get("note_content")
+        note = Note(
+            note_name = name,
+            note_content = content,
+            created_date = datetime.datetime.now(),
+            owner = request.user
+        )
+        note.save()
+    return HttpResponseRedirect("/notes/")
 
 @login_required
 def deleteNote(request, note_id):
-    return HttpResponse("Not implemented")
+    if request.method == "POST":
+        note = Note.objects.get(id=note_id)
+        note.delete()
+    return HttpResponseRedirect("/notes/")
 
 def createAccount(request):
     form = CreateUserForm()
